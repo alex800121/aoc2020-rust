@@ -1,8 +1,42 @@
 use std::array::{self, from_fn};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::hash::Hash;
+use std::mem::swap;
 use std::ops::Range;
 
+use num::traits::Euclid;
+
+pub fn chinese_rem(input: &[(i64, i64)]) -> Option<i64> {
+    let b = input.iter().map(|x| x.0).product::<i64>();
+    let mut acc = 0;
+    for (n, r) in input {
+        let n0 = b / n;
+        let (x, _, z) = egcd(n0, *n);
+        if z != 1 {
+            return None;
+        }
+        acc += x * n0 * r;
+    }
+    Some(acc.rem_euclid(b))
+}
+pub fn egcd(a: i64, b: i64) -> (i64, i64, i64) {
+    let mut r0 = a;
+    let mut r1 = b;
+    let mut s0 = 1;
+    let mut s1 = 0;
+    let mut t0 = 0;
+    let mut t1 = 1;
+    while r1 != 0 {
+        swap(&mut r0, &mut r1);
+        swap(&mut s0, &mut s1);
+        swap(&mut t0, &mut t1);
+        let q = r1.div_euclid(r0);
+        r1 = r1.rem_euclid(r0);
+        s1 -= s0 * q;
+        t1 -= t0 * q;
+    }
+    (s0, t0, r0)
+}
 pub fn print_map<E>(
     map: &BTreeMap<(isize, isize), E>,
     to_char: impl Fn(Option<&E>) -> char,
