@@ -373,7 +373,19 @@ impl Enum for Turn {
         }
     }
 }
-
+pub trait Coord {
+    fn adjacent<T>(&self) -> T
+    where
+        T: Iterator<Item = Self>;
+}
+impl<const N: usize> Coord for [i64; N] {
+    fn adjacent<T>(&self) -> T
+    where
+        T: Iterator<Item = Self>,
+    {
+        unimplemented!()
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
