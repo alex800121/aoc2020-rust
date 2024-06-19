@@ -4,7 +4,7 @@ use std::hash::Hash;
 use std::mem::swap;
 use std::ops::Range;
 
-use num::traits::Euclid;
+use itertools::Itertools;
 
 pub fn chinese_rem(input: &[(i64, i64)]) -> Option<i64> {
     let b = input.iter().map(|x| x.0).product::<i64>();
@@ -374,16 +374,51 @@ impl Enum for Turn {
     }
 }
 pub trait Coord {
-    fn adjacent<T>(&self) -> T
-    where
-        T: Iterator<Item = Self>;
+    fn adjacent(&self) -> Vec<Box<Self>>;
+    fn surround(&self) -> Vec<Box<Self>>;
 }
 impl<const N: usize> Coord for [i64; N] {
-    fn adjacent<T>(&self) -> T
-    where
-        T: Iterator<Item = Self>,
-    {
-        unimplemented!()
+    fn surround(&self) -> Vec<Box<Self>> {
+        let tmp = [-1, 0, 1];
+        let mut v: Vec<Vec<i64>> = vec![vec![]];
+        for _ in 0..N {
+            v = v
+                .into_iter()
+                .flat_map(|x| {
+                    tmp.iter().map(move |y| {
+                        let mut z = x.clone();
+                        z.push(*y);
+                        z
+                    })
+                })
+                .collect_vec();
+        }
+        v.into_iter()
+            .filter_map(|x| {
+                if x.iter().all(|y| *y == 0) {
+                    None
+                } else {
+                    let mut y: Self = [0; N];
+                    for i in 0..N {
+                        y[i] = x[i].checked_add(self[i])?;
+                    }
+                    Some(Box::new(y))
+                }
+            })
+            .collect_vec()
+    }
+    fn adjacent(&self) -> Vec<Box<Self>> {
+        let mut v = Vec::new();
+        for i in 0..N {
+            for x in [-1, 1i64] {
+                if let Some(x) = x.checked_add(self[i]) {
+                    let mut s0 = *self;
+                    s0[i] = x;
+                    v.push(Box::new(s0));
+                }
+            }
+        }
+        v
     }
 }
 #[cfg(test)]
