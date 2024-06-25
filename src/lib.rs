@@ -221,21 +221,22 @@ impl<Idx: Copy + Ord + Hash, const N: usize> EucVec for [Range<Idx>; N] {
 }
 
 pub trait Transpose {
-    fn transpose(&mut self) -> Self::Transposed;
+    fn transpose(self) -> Self::Transposed;
     type Transposed;
 }
 
 impl<T: Clone, const N: usize, const M: usize> Transpose for [[T; N]; M] {
     type Transposed = [[T; M]; N];
-    fn transpose(&mut self) -> Self::Transposed {
+    fn transpose(self) -> Self::Transposed {
         array::from_fn(|x| array::from_fn(|y| self[y][x].clone()))
     }
 }
 impl<T> Transpose for Vec<Vec<T>> {
     type Transposed = Vec<Vec<T>>;
-    fn transpose(&mut self) -> Self::Transposed {
+    fn transpose(self) -> Self::Transposed {
         let mut new_vec: Vec<Vec<T>> = Vec::new();
-        for row in self {
+        let s = self;
+        for mut row in s {
             for i in 0..row.len() {
                 let e = row.remove(0);
                 match new_vec.get_mut(i) {
@@ -251,18 +252,19 @@ impl<T> Transpose for Vec<Vec<T>> {
 }
 
 pub trait Clockwise {
-    fn clockwise(&mut self) -> Self::Other;
-    fn counter_clockwise(&mut self) -> Self::Other;
+    fn clockwise(self) -> Self::Other;
+    fn counter_clockwise(self) -> Self::Other;
     type Other;
 }
 impl<T: Clone, const N: usize, const M: usize> Clockwise for [[T; N]; M] {
     type Other = [[T; M]; N];
-    fn clockwise(&mut self) -> Self::Other {
-        self.reverse();
-        self.transpose()
+    fn clockwise(self) -> Self::Other {
+        let mut x = self.clone();
+        x.reverse();
+        x.transpose()
     }
 
-    fn counter_clockwise(&mut self) -> Self::Other {
+    fn counter_clockwise(self) -> Self::Other {
         let mut x = self.transpose();
         x.reverse();
         x
@@ -270,9 +272,10 @@ impl<T: Clone, const N: usize, const M: usize> Clockwise for [[T; N]; M] {
 }
 impl<T> Clockwise for Vec<Vec<T>> {
     type Other = Vec<Vec<T>>;
-    fn clockwise(&mut self) -> Self {
-        self.reverse();
-        self.transpose()
+    fn clockwise(self) -> Self {
+        let mut s = self;
+        s.reverse();
+        s.transpose()
     }
     fn counter_clockwise(&mut self) -> Self {
         let mut x = self.transpose();

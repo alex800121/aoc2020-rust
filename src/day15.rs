@@ -25,17 +25,17 @@ const R1: usize = 30000000;
 //     }
 //     last_spoken
 // }
-fn solve<const N: usize>() -> usize {
+fn solve(n: usize) -> usize {
     let l = INPUT.len();
-    if N <= l {
-        return INPUT[N - 1];
+    if n <= l {
+        return INPUT[n - 1];
     }
-    let mut arr = vec![0; N];
+    let mut arr = vec![0; n];
     for (i, n) in INPUT.iter().enumerate() {
         arr[*n] = i + 1;
     }
     let mut last_spoken = 0;
-    for c in (l + 1)..N {
+    for c in (l + 1)..n {
         let n = arr[last_spoken];
         arr[last_spoken] = c;
         if n == 0 {
@@ -47,6 +47,6 @@ fn solve<const N: usize>() -> usize {
     last_spoken
 }
 pub fn run(_day: usize) {
-    println!("day15a: {}", solve::<R0>());
-    println!("day15b: {}", solve::<R1>());
+    println!("day15a: {}", solve(R0));
+    println!("day15b: {}", solve(R1));
 }
