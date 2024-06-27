@@ -1,6 +1,4 @@
 use std::collections::{BTreeMap, BTreeSet};
-
-use itertools::Itertools;
 use nom::{
     self,
     branch::alt,
@@ -42,7 +40,7 @@ fn parse_bag(input: &str) -> IResult<&str, (&str, BTreeMap<&str, u32>)> {
     Ok((input, (b, s)))
 }
 type Bags<'a> = BTreeMap<&'a str, BTreeMap<&'a str, u32>>;
-fn solve_a<'a>(b: &Bags<'a>) -> usize {
+fn solve_a(b: &Bags<'_>) -> usize {
     let mut acc = BTreeSet::new();
     let mut start = BTreeSet::from(["shiny gold"]);
     while !start.is_empty() {

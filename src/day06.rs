@@ -1,8 +1,4 @@
-use std::ops::{BitOr, RangeBounds};
-
 use itertools::Itertools;
-use nom::{bytes, AsBytes};
-use num::PrimInt;
 use project_root::get_project_root;
 
 fn calc_votes(input: &[&[u8]]) -> (u32, u32) {

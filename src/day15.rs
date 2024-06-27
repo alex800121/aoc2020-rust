@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 // const INPUT: [usize; 3] = [3, 1, 2];
 const INPUT: [usize; 6] = [1, 0, 15, 2, 10, 13];
 const R0: usize = 2020;

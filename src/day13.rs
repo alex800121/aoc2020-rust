@@ -1,6 +1,5 @@
-use aoc2020::{chinese_rem, egcd};
+use aoc2020::chinese_rem;
 use itertools::Itertools;
-use num::traits::Euclid;
 use project_root::get_project_root;
 
 pub fn run(day: usize) {

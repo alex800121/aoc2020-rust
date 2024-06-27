@@ -5,7 +5,7 @@ use project_root::get_project_root;
 
 type Recipe<'a> = BTreeMap<&'a str, BTreeSet<&'a str>>;
 type Ingredients<'a> = BTreeMap<&'a str, usize>;
-fn read_recipe<'a>(input: &'a str) -> Option<(Ingredients<'a>, Recipe<'a>)> {
+fn read_recipe(input: &str) -> Option<(Ingredients<'_>, Recipe<'_>)> {
     let mut output = BTreeMap::new();
     let mut ingredients = BTreeMap::new();
     for l in input.lines() {

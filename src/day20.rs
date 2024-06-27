@@ -1,10 +1,9 @@
-use aoc2020::{Clockwise, Transpose, ZipWith};
+use aoc2020::{Clockwise, ZipWith};
 use itertools::{Either, Itertools};
 use project_root::get_project_root;
 use std::{array::from_fn, collections::BTreeMap};
 
 const N: usize = 10;
-const M: usize = 8;
 type Tile<const N: usize> = [[bool; N]; N];
 type NumTile<const N: usize> = (u64, Tile<N>);
 type Index = [i64; 2];
