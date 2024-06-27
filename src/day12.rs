@@ -1,7 +1,7 @@
 use aoc2020::Direction::{self, *};
 use project_root::get_project_root;
 
-type Coord = (isize, isize);
+type Coord = [isize; 2];
 
 #[derive(Debug, PartialOrd, PartialEq, Ord, Eq, Clone, Copy)]
 struct Ferry {
@@ -16,20 +16,20 @@ enum Ins {
 }
 impl Ferry {
     fn coord_dir(&mut self, n: isize, d: Direction) {
-        let (x, y) = d.to_index();
-        self.coord = (self.coord.0 + (x * n), self.coord.1 + (y * n));
+        let [x, y] = d.to_index();
+        self.coord = [self.coord[0] + (x * n), self.coord[1] + (y * n)];
     }
     fn way_dir(&mut self, n: isize, d: Direction) {
-        let (x, y) = d.to_index();
-        self.waypoint = (self.waypoint.0 + (x * n), self.waypoint.1 + (y * n));
+        let [x, y] = d.to_index();
+        self.waypoint = [self.waypoint[0] + (x * n), self.waypoint[1] + (y * n)];
     }
     fn forward(&mut self, n: isize) {
-        let (x, y) = self.waypoint;
-        self.coord = (self.coord.0 + (x * n), self.coord.1 + (y * n));
+        let [x, y] = self.waypoint;
+        self.coord = [self.coord[0] + (x * n), self.coord[1] + (y * n)];
     }
     fn way_turn(&mut self, n: usize) {
         for _ in 0..n {
-            self.waypoint = (-self.waypoint.1, self.waypoint.0);
+            self.waypoint = [-self.waypoint[1], self.waypoint[0]];
         }
     }
 }
@@ -75,18 +75,18 @@ pub fn run(day: usize) {
     .unwrap();
     let input_a = input.lines();
     let mut ferry_a = Ferry {
-        coord: (0, 0),
+        coord: [0, 0],
         waypoint: (East.to_index()),
     };
     let mut ferry_b = Ferry {
-        coord: (0, 0),
-        waypoint: (10, -1),
+        coord: [0, 0],
+        waypoint: [10, -1],
     };
     for input in input_a {
         step_a(input, &mut ferry_a);
         step_b(input, &mut ferry_b);
         // dbg!(&ferry_a);
     }
-    println!("day12a: {}", ferry_a.coord.0.abs() + ferry_a.coord.1.abs());
-    println!("day12b: {}", ferry_b.coord.0.abs() + ferry_b.coord.1.abs());
+    println!("day12a: {}", ferry_a.coord[0].abs() + ferry_a.coord[1].abs());
+    println!("day12b: {}", ferry_b.coord[0].abs() + ferry_b.coord[1].abs());
 }

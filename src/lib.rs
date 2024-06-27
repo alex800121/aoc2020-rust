@@ -2,9 +2,11 @@ use std::array::{self, from_fn};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::hash::Hash;
 use std::mem::swap;
-use std::ops::Range;
+use std::ops::{Bound, Range, RangeBounds};
+use std::iter::{IntoIterator, Iterator};
 
 use itertools::Itertools;
+use num::Bounded;
 
 pub fn chinese_rem(input: &[(i64, i64)]) -> Option<i64> {
     let b = input.iter().map(|x| x.0).product::<i64>();
@@ -277,7 +279,7 @@ impl<T> Clockwise for Vec<Vec<T>> {
         s.reverse();
         s.transpose()
     }
-    fn counter_clockwise(&mut self) -> Self {
+    fn counter_clockwise(self) -> Self {
         let mut x = self.transpose();
         x.reverse();
         x
@@ -327,14 +329,33 @@ impl Direction {
     pub fn oppose(&self) -> Self {
         self.succ().succ()
     }
-    pub fn to_index(&self) -> (isize, isize) {
+    pub fn to_index(&self) -> [isize; 2] {
         use Direction::*;
         match self {
-            North => (0, -1),
-            South => (0, 1),
-            East => (1, 0),
-            West => (-1, 0),
+            North => [0, -1],
+            South => [0, 1],
+            East => [1, 0],
+            West => [-1, 0],
         }
+    }
+}
+
+impl Bounded for Direction {
+    fn min_value() -> Self {
+        Self::North
+    }
+
+    fn max_value() -> Self {
+        Self::West
+    }
+}
+impl RangeBounds<Direction> for Direction {
+    fn start_bound(&self) -> std::ops::Bound<&Direction> {
+        Bound::Included(&Self::North)
+    }
+
+    fn end_bound(&self) -> std::ops::Bound<&Direction> {
+        Bound::Included(&Self::West)
     }
 }
 impl Enum for Direction {
